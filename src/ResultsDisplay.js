@@ -3,14 +3,6 @@ import React from "react";
 
 export default
 function ResultsDisplay({ request, ranges, weightSystemCount, wsPath }) {
-    if (request.length != 0 && weightSystemCount == 0) {
-        return (
-            <div className="content">
-                There are no weight sytems with {formattedRequest}.
-            </div>
-        );
-    }
-
     const formattedRequest = request === null ? null : request
         .map(desc =>
             <span key={desc.name}>
@@ -20,6 +12,14 @@ function ResultsDisplay({ request, ranges, weightSystemCount, wsPath }) {
                 {" "}=&nbsp;{desc.value}
             </span>
         );
+
+    if (request.length != 0 && weightSystemCount == 0) {
+        return (
+            <div className="content">
+                There are no weight sytems with {formattedRequest}.
+            </div>
+        );
+    }
 
     const formattedCount =
         String(weightSystemCount).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
