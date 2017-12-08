@@ -3,10 +3,15 @@ import React from "react";
 
 export default
 function ResultsDisplay({ request, ranges, weightSystemCount, wsPath }) {
-    if (request === null)
-        return <div/>;
+    if (request.length != 0 && weightSystemCount == 0) {
+        return (
+            <div className="content">
+                There are no weight sytems with {formattedRequest}.
+            </div>
+        );
+    }
 
-    const formattedRequest = request
+    const formattedRequest = request === null ? null : request
         .map(desc =>
             <span key={desc.name}>
                 {desc !== request[0] ? ", " : ""}
@@ -16,13 +21,25 @@ function ResultsDisplay({ request, ranges, weightSystemCount, wsPath }) {
             </span>
         );
 
-    if (weightSystemCount == 0) {
-        return (
-            <div className="content">
-                There are no weight sytems with {formattedRequest}.
-            </div>
-        );
-    }
+    const info = request.length == 0 ? (
+        <p>
+            There are {weightSystemCount} weight systems in total.
+            They have the following properties:
+        </p>
+    ) : weightSystemCount == 1 ? (
+        <p>
+            There is one weight system with {formattedRequest}.
+            {ranges.length > 0 ?
+                " It has the following further properties:" : ""}
+        </p>
+    ) : (
+        <p>
+            There are {weightSystemCount} weight systems
+            with {formattedRequest}.
+            {ranges.length > 0 ?
+                " They have the following further properties:" : ""}
+        </p>
+    );
 
     const formattedRanges = ranges.map(desc =>
         desc.count == 1 ? (
@@ -41,44 +58,29 @@ function ResultsDisplay({ request, ranges, weightSystemCount, wsPath }) {
         )
     );
 
-    const download = wsPath != null ? (
+    const download = request.length == 0 ? (
+        ""
+    ) : wsPath != null ? (
         <span>
             The corresponding <a href={wsPath} download>weight systems text
             file</a> can be downloaded.
+            To further restrict the query, choose values in the ranges given
+            above.
         </span>
     ) : (
         <span>
             There are more weight systems matching the criteria than can be
             downloaded.
+            To further restrict the query, choose values in the ranges given
+            above.
         </span>
-    );
-
-    const info = weightSystemCount == 1 ? (
-        <p>
-            There is one weight system with {formattedRequest}.
-            {ranges.length > 0 ?
-                " It has the following further properties:" : ""}
-        </p>
-    ) : (
-        <p>
-            There are {weightSystemCount} weight systems
-            with {formattedRequest}.
-            {ranges.length > 0 ?
-                " They have the following further properties:" : ""}
-        </p>
     );
 
     return (
         <div className="content">
             {info}
-            <ul>
-                {formattedRanges}
-            </ul>
-            <p>
-                {download}{" "}
-                To further restrict the query, choose values in the ranges given
-                above.
-            </p>
+            <ul>{formattedRanges}</ul>
+            {download}
         </div>
     );
 }

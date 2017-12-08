@@ -16,7 +16,7 @@ import ResultsDisplay from "./ResultsDisplay";
 
 import "bulma/bulma.sass";
 
-const requestFields = [
+const REQUEST_FIELDS = [
     {
         name: "h11",
         label: "h<sup>1,1</sup>",
@@ -44,16 +44,46 @@ const requestFields = [
     },
 ];
 
+const TOTAL_WEIGHT_SYSTEM_COUNT = 185269499015;
+
+const TOTAL_RANGES = {
+    h11: {
+        min: 0,
+        max: 1,
+        count: 1,
+    },
+    h12: {
+        min: 0,
+        max: 1,
+        count: 1,
+    },
+    h13: {
+        min: 0,
+        max: 1,
+        count: 1,
+    },
+    h22: {
+        min: 0,
+        max: 1,
+        count: 1,
+    },
+    chi: {
+        min: 0,
+        max: 1,
+        count: 1,
+    },
+};
+
 const SET_FORM_DATA = "SET_FORM_DATA";
-const SUBMIT_REQUEST = "SUBMIT_REQUEST";
+const SUBMIT_FORM = "SUBMIT_FORM";
 const SET_RESPONSE = "SET_RESPONSE";
 
 const setFormData = (name, value) => ({ type: SET_FORM_DATA, name, value });
-const submitRequest = () => ({ type: SUBMIT_REQUEST });
+const submitForm = () => ({ type: SUBMIT_FORM });
 const setResponse = (response) => ({ type: SET_RESPONSE, response });
 
 const initialState = {
-    formData: _.mapValues(_.keyBy(requestFields, "name"), () => ""),
+    formData: _.mapValues(_.keyBy(REQUEST_FIELDS, "name"), () => ""),
     requestPending: false,
     response: null,
 };
@@ -73,9 +103,7 @@ function validNumberInput(value) {
 }
 
 function validFormData(formData) {
-    const hasInput = _.some(_.map(formData, x => x !== ""));
-    const inputValid = _.every(_.map(formData, validNumberInput));
-    return hasInput && inputValid;
+    return _.every(_.map(formData, validNumberInput));
 }
 
 function stateToFormProps(state) {
@@ -92,7 +120,7 @@ function dispatchToFormProps(dispatch) {
         onChange: (id, value) =>
             dispatch(setFormData(id, value)),
         onSubmit: () =>
-            dispatch(submitRequest()),
+            dispatch(submitForm()),
     };
 }
 
@@ -100,30 +128,32 @@ const ConnectedQueryForm =
     connect(stateToFormProps, dispatchToFormProps)(QueryForm);
 
 function stateToDisplayProps(state) {
-    if (state.response === null) {
-        return {
-            request: null,
-            ranges: null,
-            weightSystemCount: null,
-            wsPath: null,
-        };
+    let request, ranges, weightSystemCount, wsPath;
+
+    if (state.response != null) {
+        request = state.response.request;
+        ranges = state.response.ranges;
+        weightSystemCount = state.response.ws_count;
+        wsPath = state.response.can_download ?
+            weight_systems_request_url(state.response.request) : null;
+    } else {
+        request = [];
+        ranges = TOTAL_RANGES;
+        weightSystemCount = TOTAL_WEIGHT_SYSTEM_COUNT;
+        wsPath = null;
     }
 
     return {
-        request: requestFields.map(desc =>
-            Object.assign({ value: state.response.request[desc.name] }, desc))
+        request: REQUEST_FIELDS.map(desc =>
+            Object.assign({ value: request[desc.name] }, desc))
             .filter(x => x.value != null),
 
-        ranges: state.response.ranges == null ? null :
-            requestFields.map(desc =>
-                Object.assign({}, state.response.ranges[desc.name], desc))
-                .filter(x => x.count != null),
+        ranges: REQUEST_FIELDS.map(desc =>
+            Object.assign({}, ranges[desc.name], desc))
+            .filter(x => x.count != null),
 
-        weightSystemCount:
-            state.response !== null ? state.response.ws_count : null,
-
-        wsPath: state.response !== null && state.response.can_download ?
-            weight_systems_request_url(state.response.request) : null,
+        weightSystemCount,
+        wsPath,
     };
 }
 
@@ -143,7 +173,7 @@ function reduce(state = initialState, action) {
             response: action.response,
             requestPending: false,
         });
-    case SUBMIT_REQUEST:
+    case SUBMIT_FORM:
         return Object.assign({}, state, { requestPending: true });
     default:
         return state;
@@ -151,11 +181,17 @@ function reduce(state = initialState, action) {
 }
 
 const epic = (action, state) =>
-    action.ofType(SUBMIT_REQUEST).switchMap(() =>
-        ajax(stats_request_url(state.getState().formData))
+    action.ofType(SUBMIT_FORM).switchMap(() => {
+        let req = state.getState().formData;
+        req = _.pickBy(req, x => x != "");
+
+        if (_.size(req) == 0)
+            return observableOf(setResponse(null));
+
+        return ajax(stats_request_url(state.getState().formData))
             .map(r => setResponse(r.response))
-            .catch(() => observableOf(setResponse(null)))
-    );
+            .catch(() => observableOf(setResponse(null)));
+    });
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const store = createStore(
@@ -167,7 +203,7 @@ render(
     <Provider store={store}>
         <div className="columns">
             <div className="column is-5">
-                <ConnectedQueryForm requestFields={requestFields}/>
+                <ConnectedQueryForm requestFields={REQUEST_FIELDS}/>
             </div>
             <div className="column">
                 <ConnectedResultsDisplay/>
