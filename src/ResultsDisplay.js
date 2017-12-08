@@ -21,9 +21,12 @@ function ResultsDisplay({ request, ranges, weightSystemCount, wsPath }) {
             </span>
         );
 
+    const formattedCount =
+        String(weightSystemCount).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
     const info = request.length == 0 ? (
         <p>
-            There are {weightSystemCount} weight systems in total.
+            There are {formattedCount} weight systems in total.
             They have the following properties:
         </p>
     ) : weightSystemCount == 1 ? (
@@ -34,7 +37,7 @@ function ResultsDisplay({ request, ranges, weightSystemCount, wsPath }) {
         </p>
     ) : (
         <p>
-            There are {weightSystemCount} weight systems
+            There are {formattedCount} weight systems
             with {formattedRequest}.
             {ranges.length > 0 ?
                 " They have the following further properties:" : ""}
