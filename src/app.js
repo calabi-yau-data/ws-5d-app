@@ -16,6 +16,8 @@ import ResultsDisplay from "./ResultsDisplay";
 
 import "bulma/bulma.sass";
 
+const DB_PATH = "db/reflexive";
+
 const REQUEST_FIELDS = [
     {
         name: "h11",
@@ -91,12 +93,12 @@ const initialState = {
 
 function stats_request_url(request) {
     const qs = _.keys(request).map(key => key + "=" + request[key]).join("&");
-    return "http://rgc.itp.tuwien.ac.at/fourfolds/db/reflexive/stats?" + qs;
+    return DB_PATH + "/stats?" + qs;
 }
 
 function weight_systems_request_url(request) {
     const qs = _.keys(request).map(key => key + "=" + request[key]).join("_");
-    return "http://rgc.itp.tuwien.ac.at/fourfolds/db/reflexive/ws_6d_reflexive_" + qs + ".txt";
+    return DB_PATH + "/ws_6d_reflexive_" + qs + ".txt";
 }
 
 function validNumberInput(value) {
