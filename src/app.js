@@ -39,7 +39,7 @@ const REQUEST_FIELDS = [
     },
     {
         name: "chi",
-        label: "χ",
+        label: "chi",
         placeholder: "Euler characteristic",
     },
 ];
