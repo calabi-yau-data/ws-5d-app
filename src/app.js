@@ -44,8 +44,9 @@ const REQUEST_FIELDS = [
     },
 ];
 
-const TOTAL_WEIGHT_SYSTEM_COUNT = 463217738;
+const FIX_ALL_INPUT_COUNT = 3;
 
+const TOTAL_WEIGHT_SYSTEM_COUNT = 463217738;
 const TOTAL_RANGES = {
     h11: {
         count: 187496,
@@ -143,15 +144,18 @@ function stateToDisplayProps(state) {
         wsPath = null;
     }
 
+    request = REQUEST_FIELDS.map(desc =>
+        Object.assign({ value: request[desc.name] }, desc))
+        .filter(x => x.value != null);
+
+    ranges = REQUEST_FIELDS.map(desc =>
+        Object.assign({}, ranges[desc.name], desc))
+        .filter(x => x.count != null);
+
     return {
-        request: REQUEST_FIELDS.map(desc =>
-            Object.assign({ value: request[desc.name] }, desc))
-            .filter(x => x.value != null),
-
-        ranges: REQUEST_FIELDS.map(desc =>
-            Object.assign({}, ranges[desc.name], desc))
-            .filter(x => x.count != null),
-
+        fullyDetermined: request.length >= FIX_ALL_INPUT_COUNT,
+        request,
+        ranges,
         weightSystemCount,
         wsPath,
     };

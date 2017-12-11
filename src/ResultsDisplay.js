@@ -2,7 +2,9 @@ import _ from "lodash";
 import React from "react";
 
 export default
-function ResultsDisplay({ request, ranges, weightSystemCount, wsPath }) {
+function ResultsDisplay({ request, ranges, weightSystemCount, wsPath,
+                          fullyDetermined }) {
+
     const formattedRequest = request === null ? null : request
         .map(desc =>
             <span key={desc.name}>
@@ -61,21 +63,20 @@ function ResultsDisplay({ request, ranges, weightSystemCount, wsPath }) {
         )
     );
 
+    const restrict = fullyDetermined ? "" :
+        "To further restrict the query, choose values in the ranges given above.";
+
     const download = request.length == 0 ? (
         ""
     ) : wsPath != null ? (
         <span>
             The corresponding <a href={wsPath} download>weight systems text
-            file</a> can be downloaded.
-            To further restrict the query, choose values in the ranges given
-            above.
+            file</a> can be downloaded. {restrict}
         </span>
     ) : (
         <span>
             There are more weight systems matching the criteria than can be
-            downloaded.
-            To further restrict the query, choose values in the ranges given
-            above.
+            downloaded. {restrict}
         </span>
     );
 
