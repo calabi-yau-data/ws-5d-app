@@ -48,32 +48,32 @@ const REQUEST_FIELDS = [
 
 const FIX_ALL_INPUT_COUNT = 3;
 
-const TOTAL_WEIGHT_SYSTEM_COUNT = 463217738;
+const TOTAL_WEIGHT_SYSTEM_COUNT = 185269499015;
 const TOTAL_RANGES = {
     h11: {
-        count: 187496,
+        count: 190201,
         max: 303148,
-        min: 1
+        min: 1,
     },
     h12: {
-        count: 1467,
-        max: 1989,
-        min: 0
+        count: 1689,
+        max: 2010,
+        min: 0,
     },
     h13: {
-        count: 81836,
-        max: 156420,
-        min: 1
+        count: 145848,
+        max: 303148,
+        min: 1,
     },
     h22: {
-        count: 348673,
+        count: 361426,
         max: 1213644,
-        min: 180
+        min: 82,
     },
     chi: {
-        count: 183919,
+        count: 188804,
         max: 1820448,
-        min: -144
+        min: -252,
     },
 };
 
