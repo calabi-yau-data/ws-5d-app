@@ -5,7 +5,7 @@ import config
 from decoder import read_varint
 import service
 
-engine = sqlalchemy.create_engine(config.DB_URL)
+engine = sqlalchemy.create_engine(config.DB_URI)
 app = flask.Flask(__name__)
 
 
