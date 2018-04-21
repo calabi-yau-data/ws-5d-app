@@ -1,2 +1,2 @@
-DB_URL = "postgresql://polyhedra_reader:66yKlImlZIS2aaiia1o1@localhost/polyhedra"
-WEIGHT_SYSTEM_DOWNLOAD_LIMIT = 1000
+DB_URL = "postgresql://polyhedra_reader:not_so_secret@127.0.0.1/polyhedra"
+WEIGHT_SYSTEM_DOWNLOAD_LIMIT = 10000
