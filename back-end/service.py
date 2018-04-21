@@ -7,7 +7,7 @@ import urllib
 import config
 
 
-def service(app, engine, fields, table, stats_table, read_ws, format_ws):
+def service(app, engine, root, fields, table, stats_table, read_ws, format_ws):
     metadata = sqlalchemy.MetaData(bind=engine)
 
     columns = [
@@ -88,7 +88,7 @@ def service(app, engine, fields, table, stats_table, read_ws, format_ws):
                 pass
         return request
 
-    @app.route("/reflexive/stats")
+    @app.route(root + "stats", endpoint=root + "stats")
     def stats_handler():
         request = parse_request(flask.request.args)
         stats = get_stats(request)
@@ -119,7 +119,7 @@ def service(app, engine, fields, table, stats_table, read_ws, format_ws):
 
         return flask.json.jsonify(reply)
 
-    @app.route("/reflexive/ws_6d_reflexive_<request>.txt")
+    @app.route(root + "ws_6d_reflexive_<request>.txt", endpoint=root + "data")
     def ws_handler(request):
         request = urllib.parse.parse_qs(request.replace("_", "&"))
         request = parse_request({k: v[0] for k, v in request.items()})
