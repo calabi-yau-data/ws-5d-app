@@ -16,7 +16,7 @@ import ResultsDisplay from "./ResultsDisplay";
 
 import "bulma/bulma.sass";
 
-const DB_PATH = "db/reflexive";
+const DB_PATH = "http://rgc.itp.tuwien.ac.at/fourfolds/db/reflexive";
 
 const REQUEST_FIELDS = [
     {
