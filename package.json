@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "scripts": {
     "build": "parcel build src/index.html",
-    "start": "parcel src/index.html"
+    "start": "parcel src/index.html",
+    "format": "eslint src/*.js --fix"
   },
   "dependencies": {
     "bulma": "^0.7.1",
@@ -16,5 +17,9 @@
     "redux": "^3.7.2",
     "redux-observable": "^0.18.0",
     "rxjs": "^5.5.10"
+  },
+  "devDependencies": {
+    "eslint": "^4.19.1",
+    "eslint-plugin-react": "^7.7.0"
   }
 }
