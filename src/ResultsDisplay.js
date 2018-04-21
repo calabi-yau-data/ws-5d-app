@@ -3,7 +3,7 @@ import React from "react";
 
 export default
 function ResultsDisplay({ request, ranges, weightSystemCount, wsPath,
-                          fullyDetermined }) {
+    fullyDetermined }) {
 
     const formattedRequest = request === null ? null : request
         .map(desc =>
