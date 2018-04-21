@@ -17,13 +17,3 @@ def read_varint(stream):
         pos += 7
 
     return ret
-
-
-def read_ws_entry(stream):
-    return {
-        "weights": [read_varint(stream) for _ in range(6)],
-        "vertex_count": read_varint(stream),
-        "facet_count": read_varint(stream),
-        "point_count": read_varint(stream),
-        "dual_point_count": read_varint(stream),
-    }
