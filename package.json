@@ -1,5 +1,5 @@
 {
-  "name": "weight-systems",
+  "name": "reflexive-polyhedra-5d",
   "version": "1.0.0",
   "scripts": {
     "build": "parcel build src/index.html",
