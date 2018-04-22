@@ -150,6 +150,7 @@ def service(app, engine, root, all_fields, table, stats_table, read_ws, format_w
             return flask.Response(
                 "".join([format(dict(row)) for row in result]),
                 mimetype="text/plain",
+                headers=[("X-Content-Type-Options", "nosniff")],
             )
         finally:
             result.close()
