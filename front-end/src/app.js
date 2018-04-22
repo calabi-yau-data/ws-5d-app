@@ -131,19 +131,24 @@ const ConnectedQueryForm =
     connect(stateToFormProps, dispatchToFormProps)(QueryForm);
 
 function stateToDisplayProps(state) {
-    let request, ranges, weightSystemCount, wsPath;
+    let request, ranges, weightSystemCount, wsPath, error;
 
-    if (state.response != null) {
+    if (state.response != null && state.response.ok) {
         request = state.response.request;
         ranges = state.response.ranges;
         weightSystemCount = state.response.ws_count;
         wsPath = state.response.can_download ?
             weight_systems_request_url(state.response.request) : null;
+        error = null;
     } else {
         request = [];
         ranges = TOTAL_RANGES;
         weightSystemCount = TOTAL_WEIGHT_SYSTEM_COUNT;
         wsPath = null;
+        if (state.response != null)
+            error = "Server error.";
+        else
+            error = null;
     }
 
     request = REQUEST_FIELDS.map(desc =>
@@ -160,6 +165,7 @@ function stateToDisplayProps(state) {
         ranges,
         weightSystemCount,
         wsPath,
+        error,
     };
 }
 
@@ -192,11 +198,11 @@ const epic = (action, state) =>
         req = _.pickBy(req, x => x != "");
 
         if (_.size(req) == 0)
-            return observableOf(setResponse(null));
+            return observableOf(setResponse({ ok: false }));
 
         return ajax(stats_request_url(state.getState().formData))
-            .map(r => setResponse(r.response))
-            .catch(() => observableOf(setResponse(null)));
+            .map(r => setResponse(Object.assign({}, r.response, { ok: true })))
+            .catch(() => observableOf(setResponse({ ok: false })));
     });
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;

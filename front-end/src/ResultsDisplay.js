@@ -3,7 +3,13 @@ import React from "react";
 
 export default
 function ResultsDisplay({ request, ranges, weightSystemCount, wsPath,
-    fullyDetermined }) {
+    fullyDetermined, error }) {
+
+    if (error !== null) {
+        return (
+            <div className="notification is-danger">{error}</div>
+        );
+    }
 
     const formattedRequest = request === null ? null : request
         .map(desc =>
