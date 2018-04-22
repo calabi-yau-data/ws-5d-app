@@ -16,6 +16,8 @@ import ResultsDisplay from "./ResultsDisplay";
 
 export default
 function app(settings) {
+    const SAMPLE_SIZE = 100000;
+
     const SET_FORM_DATA = "SET_FORM_DATA";
     const SUBMIT_FORM = "SUBMIT_FORM";
     const SET_RESPONSE = "SET_RESPONSE";
@@ -38,6 +40,13 @@ function app(settings) {
     function weight_systems_request_url(request) {
         const qs = _.keys(request).map(key => key + "=" + request[key]).join(",");
         return settings.backend_path + "," + qs + ".txt";
+    }
+
+    function sample_request_url(request) {
+        const qs = _.keys(request)
+            .map(key => key + "=" + request[key])
+        qs.push("limit=" + SAMPLE_SIZE);
+        return settings.backend_path + "," + _.join(qs, ",") + ".txt";
     }
 
     function validNumberInput(value) {
@@ -70,20 +79,23 @@ function app(settings) {
     connect(stateToFormProps, dispatchToFormProps)(QueryForm);
 
     function stateToDisplayProps(state) {
-        let request, ranges, weightSystemCount, wsPath, error;
+        let request, ranges, weightSystemCount, wsPath, error, downloadableCount, samplePath;
 
         if (state.response != null && state.response.ok) {
             request = state.response.request;
             ranges = state.response.ranges;
             weightSystemCount = state.response.ws_count;
-            wsPath = state.response.can_download ?
-                weight_systems_request_url(state.response.request) : null;
+            wsPath = weight_systems_request_url(state.response.request);
+            samplePath = sample_request_url(state.response.request);
+            downloadableCount = state.response.downloadable_ws_count;
             error = null;
         } else {
             request = [];
             ranges = settings.total_ranges;
             weightSystemCount = settings.total_weight_system_count;
             wsPath = null;
+            samplePath = sample_request_url({});
+            downloadableCount = 0;
             if (state.response != null)
                 error = "Server error.";
             else
@@ -103,8 +115,11 @@ function app(settings) {
             request,
             ranges,
             weightSystemCount,
+            downloadableCount,
             wsPath,
             error,
+            samplePath,
+            sampleSize: SAMPLE_SIZE,
         };
     }
 

@@ -113,7 +113,7 @@ def service(app, engine, name, all_fields, table_name, stats_table_name, read_ws
             reply = {
                 "request": request,
                 "ws_count": stats["ws_count"],
-                "can_download": stats["ws_count"] <= config.WEIGHT_SYSTEM_DOWNLOAD_LIMIT,
+                "downloadable_ws_count": min(stats["ws_count"], config.WEIGHT_SYSTEM_DOWNLOAD_LIMIT),
                 "ranges": {field: field_info(field) for field in fields},
             }
 
@@ -122,34 +122,40 @@ def service(app, engine, name, all_fields, table_name, stats_table_name, read_ws
     @app.route("/" + name + ",<request>.txt", endpoint=name + "data")
     def ws_handler(request):
         request = urllib.parse.parse_qs(request.replace(",", "&"))
-        request = parse_request({k: v[0] for k, v in request.items()})
-        stats = get_stats(request)
 
-        if stats is None:
-            return ""
+        try:
+            ws_limit = min(int(request["limit"][0]),
+                           config.WEIGHT_SYSTEM_DOWNLOAD_LIMIT)
+        except:
+            ws_limit = config.WEIGHT_SYSTEM_DOWNLOAD_LIMIT
 
-        if stats["ws_count"] > config.WEIGHT_SYSTEM_DOWNLOAD_LIMIT:
-            flask.abort(403)  # forbidden
+        request_fields = parse_request({k: v[0] for k, v in request.items()})
 
         query = sqlalchemy.sql.select([ws_table])
 
-        for field in request:
-            query = query.where(ws_table.c[field] == request[field])
+        for field in request_fields:
+            query = query.where(ws_table.c[field] == request_fields[field])
 
-        result = engine.execute(query)
+        result = engine.execution_options(stream_results=True).execute(query)
 
-        def format(row):
+        def format(row, limit):
             ws_data = io.BytesIO(row["ws_data"])
 
             return "".join([
                 format_ws({**read_ws(ws_data), **row}) + "\n"
-                for _ in range(row["ws_count"])
+                for _ in range(min(row["ws_count"], limit))
             ])
 
         def responder():
+            ws_count = 0
+
             try:
                 for row in result:
-                    yield format(dict(row))
+                    yield format(dict(row), ws_limit - ws_count)
+
+                    ws_count += row["ws_count"]
+                    if ws_count >= ws_limit:
+                        break
             finally:
                 result.close()
 

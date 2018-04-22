@@ -2,7 +2,7 @@ import _ from "lodash";
 import React from "react";
 
 export default
-function ResultsDisplay({ request, ranges, weightSystemCount, wsPath,
+function ResultsDisplay({ request, ranges, weightSystemCount, downloadableCount, wsPath, sampleSize, samplePath,
     fullyDetermined, error }) {
 
     if (error !== null) {
@@ -72,25 +72,28 @@ function ResultsDisplay({ request, ranges, weightSystemCount, wsPath,
     const restrict = fullyDetermined ? "" :
         "To further restrict the query, choose values in the ranges given above.";
 
-    const download = request.length == 0 ? (
-        ""
-    ) : wsPath != null ? (
+    const download = weightSystemCount == downloadableCount ? (
         <span>
-            The corresponding <a href={wsPath} download>weight systems text
-            file</a> can be downloaded. {restrict}
+            The corresponding <a href={wsPath} download>weight systems</a> can be downloaded. {restrict}
         </span>
     ) : (
         <span>
-            There are more weight systems matching the criteria than can be
-            downloaded. {restrict}
+            There are more weight systems matching the criteria than can be downloaded. {restrict}
         </span>
     );
+
+    const sampleDownload = weightSystemCount > sampleSize ? (
+        <span>{" "}
+            A <a href={samplePath} download>sample</a> of {sampleSize} weight systems can be downloaded.
+        </span>
+    ) : "";
 
     return (
         <div className="content">
             {info}
             <ul>{formattedRanges}</ul>
             {download}
+            {sampleDownload}
         </div>
     );
 }
