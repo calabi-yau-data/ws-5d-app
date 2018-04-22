@@ -14,7 +14,7 @@ import { of as observableOf } from "rxjs/observable/of";
 import QueryForm from "./QueryForm";
 import ResultsDisplay from "./ResultsDisplay";
 
-const DB_PATH = "http://rgc.itp.tuwien.ac.at/fourfolds/db/reflexive";
+const DB_PATH = "http://rgc.itp.tuwien.ac.at/fourfolds/db/";
 
 const REQUEST_FIELDS = [
     {
@@ -91,12 +91,12 @@ const initialState = {
 
 function stats_request_url(request) {
     const qs = _.keys(request).map(key => key + "=" + request[key]).join("&");
-    return DB_PATH + "/stats?" + qs;
+    return DB_PATH + "reflexive_stats?" + qs;
 }
 
 function weight_systems_request_url(request) {
-    const qs = _.keys(request).map(key => key + "=" + request[key]).join("_");
-    return DB_PATH + "/ws_6d_reflexive_" + qs + ".txt";
+    const qs = _.keys(request).map(key => key + "=" + request[key]).join(",");
+    return DB_PATH + "5d_reflexive," + qs + ".txt";
 }
 
 function validNumberInput(value) {
