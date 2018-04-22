@@ -137,7 +137,7 @@ function app(settings) {
             req = _.pickBy(req, x => x != "");
 
             if (_.size(req) == 0)
-                return observableOf(setResponse({ ok: false }));
+                return observableOf(setResponse(null));
 
             return ajax(stats_request_url(state.getState().formData))
                 .map(r => setResponse(Object.assign({}, r.response, { ok: true })))
