@@ -1,5 +1,9 @@
 import os
+import sys
 
-DB_URI = os.getenv(
-    "DB", "postgresql://polyhedra_reader:not_so_secret@127.0.0.1/polyhedra")
+try:
+    DB_URI = os.environ["DB"]
+except:
+    sys.exit('Environment variable "DB" missing.')
+
 WEIGHT_SYSTEM_DOWNLOAD_LIMIT = int(os.getenv("WS_LIMIT", "10000"))
