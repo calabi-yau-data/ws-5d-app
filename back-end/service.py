@@ -7,14 +7,14 @@ import urllib
 import config
 
 
-def service(app, engine, root, fields, table, stats_table, read_ws, format_ws):
+def service(app, engine, root, all_fields, table, stats_table, read_ws, format_ws):
     metadata = sqlalchemy.MetaData(bind=engine)
 
     columns = [
         Column("ws_count", Integer, nullable=False),
         Column("ws_data", LargeBinary, nullable=False),
     ]
-    columns += [Column(field, Integer, nullable=False) for field in fields]
+    columns += [Column(field, Integer, nullable=False) for field in all_fields]
     ws_table = sqlalchemy.Table(table, metadata, *columns)
 
     columns = [
@@ -22,11 +22,11 @@ def service(app, engine, root, fields, table, stats_table, read_ws, format_ws):
         Column("ws_count", Integer, nullable=False),
     ]
     columns += [Column(field + "_min", Integer, nullable=False)
-                for field in fields]
+                for field in all_fields]
     columns += [Column(field + "_max", Integer, nullable=False)
-                for field in fields]
+                for field in all_fields]
     columns += [Column(field + "_count", Integer, nullable=False)
-                for field in fields]
+                for field in all_fields]
     stats_table = sqlalchemy.Table(stats_table, metadata, autoload=True)
 
     def get_stats_single(field, value):
@@ -47,11 +47,11 @@ def service(app, engine, root, fields, table, stats_table, read_ws, format_ws):
     def get_stats_multi(request):
         columns = [func.sum(ws_table.c.ws_count).label("ws_count")]
         columns += [func.min(ws_table.c[field]).label(field + "_min")
-                    for field in fields]
+                    for field in all_fields]
         columns += [func.max(ws_table.c[field]).label(field + "_max")
-                    for field in fields]
+                    for field in all_fields]
         columns += [func.count(ws_table.c[field].distinct())
-                    .label(field + "_count") for field in fields]
+                    .label(field + "_count") for field in all_fields]
 
         query = sqlalchemy.sql.select(columns)
 
@@ -81,7 +81,7 @@ def service(app, engine, root, fields, table, stats_table, read_ws, format_ws):
 
     def parse_request(req):
         request = {}
-        for field in fields:
+        for field in all_fields:
             try:
                 request[field] = int(req[field])
             except:
@@ -108,7 +108,7 @@ def service(app, engine, root, fields, table, stats_table, read_ws, format_ws):
                 "ranges": {},
             }
         else:
-            fields = filter(lambda field: field not in request, fields)
+            fields = filter(lambda field: field not in request, all_fields)
 
             reply = {
                 "request": request,
