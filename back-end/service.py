@@ -7,7 +7,7 @@ import urllib
 import config
 
 
-def service(app, engine, name, all_fields, table, stats_table, read_ws, format_ws):
+def service(app, engine, name, all_fields, table_name, stats_table_name, read_ws, format_ws):
     metadata = sqlalchemy.MetaData(bind=engine)
 
     columns = [
@@ -15,7 +15,7 @@ def service(app, engine, name, all_fields, table, stats_table, read_ws, format_w
         Column("ws_data", LargeBinary, nullable=False),
     ]
     columns += [Column(field, Integer, nullable=False) for field in all_fields]
-    ws_table = sqlalchemy.Table(table, metadata, *columns)
+    ws_table = sqlalchemy.Table(table_name, metadata, *columns)
 
     columns = [
         Column("selector", String, nullable=False),
@@ -27,7 +27,7 @@ def service(app, engine, name, all_fields, table, stats_table, read_ws, format_w
                 for field in all_fields]
     columns += [Column(field + "_count", Integer, nullable=False)
                 for field in all_fields]
-    stats_table = sqlalchemy.Table(stats_table, metadata, autoload=True)
+    stats_table = sqlalchemy.Table(stats_table_name, metadata, autoload=True)
 
     def get_stats_single(field, value):
         query = sqlalchemy.sql.select([stats_table]) \
