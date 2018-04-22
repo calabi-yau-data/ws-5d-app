@@ -6,4 +6,4 @@ try:
 except:
     sys.exit('Environment variable "DB" missing.')
 
-WEIGHT_SYSTEM_DOWNLOAD_LIMIT = int(os.getenv("WS_LIMIT", "10000"))
+WEIGHT_SYSTEM_DOWNLOAD_LIMIT = int(os.getenv("WS_LIMIT", "1000000"))

@@ -146,11 +146,14 @@ def service(app, engine, name, all_fields, table, stats_table, read_ws, format_w
                 for _ in range(row["ws_count"])
             ])
 
-        try:
-            return flask.Response(
-                "".join([format(dict(row)) for row in result]),
-                mimetype="text/plain",
-                headers=[("X-Content-Type-Options", "nosniff")],
-            )
-        finally:
-            result.close()
+        def responder():
+            try:
+                for row in result:
+                    yield format(dict(row))
+            finally:
+                result.close()
+
+        return flask.Response(responder(), mimetype="text/plain",
+                              headers=[
+                                  ("X-Content-Type-Options", "nosniff")],
+                              )
