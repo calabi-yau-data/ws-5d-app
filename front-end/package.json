@@ -2,7 +2,7 @@
   "name": "reflexive-polyhedra-5d",
   "version": "1.0.0",
   "scripts": {
-    "build": "parcel build src/index.html",
+    "build": "parcel build --public-url ./ src/index.html",
     "start": "parcel src/index.html",
     "format": "eslint src/*.js --fix"
   },
