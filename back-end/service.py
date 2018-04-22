@@ -119,7 +119,7 @@ def service(app, engine, name, all_fields, table, stats_table, read_ws, format_w
 
         return flask.json.jsonify(reply)
 
-    @app.route("/5d_" + name + ",<request>.txt", endpoint=name + "data")
+    @app.route("/" + name + ",<request>.txt", endpoint=name + "data")
     def ws_handler(request):
         request = urllib.parse.parse_qs(request.replace(",", "&"))
         request = parse_request({k: v[0] for k, v in request.items()})
