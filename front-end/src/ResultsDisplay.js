@@ -1,6 +1,10 @@
 import _ from "lodash";
 import React from "react";
 
+function addThousandsSeparators(v) {
+    return String(v).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
 export default
 function ResultsDisplay({ request, ranges, weightSystemCount, downloadableCount, wsPath, sampleSize, samplePath,
     fullyDetermined, error }) {
@@ -29,8 +33,7 @@ function ResultsDisplay({ request, ranges, weightSystemCount, downloadableCount,
         );
     }
 
-    const formattedCount =
-        String(weightSystemCount).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    const formattedCount = addThousandsSeparators(weightSystemCount);
 
     const info = request.length == 0 ? (
         <p>
@@ -84,7 +87,7 @@ function ResultsDisplay({ request, ranges, weightSystemCount, downloadableCount,
 
     const sampleDownload = weightSystemCount > sampleSize ? (
         <span>{" "}
-            A <a href={samplePath} download>sample</a> of {sampleSize} weight systems can be downloaded.
+            A <a href={samplePath} download>sample</a> of {addThousandsSeparators(sampleSize)} weight systems can be downloaded.
         </span>
     ) : "";
 
