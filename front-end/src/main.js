@@ -1,7 +1,9 @@
 import app from "./app";
 
+const URL_PREFIX = "http://rgc.itp.tuwien.ac.at/fourfolds/";
+
 const REFLEXIVE_SETTINGS = {
-    backend_path: "http://rgc.itp.tuwien.ac.at/fourfolds/db/5d_reflexive",
+    backend_url: URL_PREFIX + "db/5d_reflexive",
     request_fields: [
         {
             name: "h11",
@@ -62,7 +64,7 @@ const REFLEXIVE_SETTINGS = {
 };
 
 const NON_REFLEXIVE_SETTINGS = {
-    backend_path: "http://rgc.itp.tuwien.ac.at/fourfolds/db/5d_non_reflexive",
+    backend_url: URL_PREFIX + "db/5d_non_reflexive",
     request_fields: [
         {
             name: "vertex_count",

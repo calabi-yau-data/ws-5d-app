@@ -34,19 +34,19 @@ function app(settings) {
 
     function statsRequestUrl(request) {
         const qs = _.keys(request).map(key => key + "=" + request[key]).join("&");
-        return settings.backend_path + "_stats?" + qs;
+        return settings.backend_url + "_stats?" + qs;
     }
 
     function weightSystemsRequestUrl(request) {
         const qs = _.keys(request).map(key => key + "=" + request[key]).join(",");
-        return settings.backend_path + "," + qs + ".txt";
+        return settings.backend_url + "," + qs + ".txt";
     }
 
     function sampleRequestUrl(request) {
         const qs = _.keys(request)
             .map(key => key + "=" + request[key]);
         qs.push("limit=" + SAMPLE_SIZE);
-        return settings.backend_path + "," + _.join(qs, ",") + ".txt";
+        return settings.backend_url + "," + _.join(qs, ",") + ".txt";
     }
 
     function validNumberInput(value) {
