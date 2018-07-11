@@ -159,10 +159,7 @@ def service(app, engine, name, all_fields, table_name, stats_table_name, read_ws
             finally:
                 result.close()
 
-        return flask.Response(responder(), mimetype="text/plain",
-                              headers=[
-                                  ("X-Content-Type-Options", "nosniff")],
-                              )
+        return flask.Response(responder(), mimetype="text/plain")
 
     @app.route("/" + name + "_<target_field>,<request>.txt", endpoint=name + "numbers")
     def ws_numbers_handler(target_field, request):
@@ -205,7 +202,4 @@ def service(app, engine, name, all_fields, table_name, stats_table_name, read_ws
             finally:
                 result.close()
 
-        return flask.Response(responder(), mimetype="text/plain",
-                              headers=[
-                                  ("X-Content-Type-Options", "nosniff")],
-                              )
+        return flask.Response(responder(), mimetype="text/plain")
