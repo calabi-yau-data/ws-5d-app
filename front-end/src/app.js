@@ -32,19 +32,19 @@ function app(settings) {
         response: null,
     };
 
-    function stats_request_url(request) {
+    function statsRequestUrl(request) {
         const qs = _.keys(request).map(key => key + "=" + request[key]).join("&");
         return settings.backend_path + "_stats?" + qs;
     }
 
-    function weight_systems_request_url(request) {
+    function weightSystemsRequestUrl(request) {
         const qs = _.keys(request).map(key => key + "=" + request[key]).join(",");
         return settings.backend_path + "," + qs + ".txt";
     }
 
-    function sample_request_url(request) {
+    function sampleRequestUrl(request) {
         const qs = _.keys(request)
-            .map(key => key + "=" + request[key])
+            .map(key => key + "=" + request[key]);
         qs.push("limit=" + SAMPLE_SIZE);
         return settings.backend_path + "," + _.join(qs, ",") + ".txt";
     }
@@ -85,8 +85,8 @@ function app(settings) {
             request = state.response.request;
             ranges = state.response.ranges;
             weightSystemCount = state.response.ws_count;
-            wsPath = weight_systems_request_url(state.response.request);
-            samplePath = sample_request_url(state.response.request);
+            wsPath = weightSystemsRequestUrl(state.response.request);
+            samplePath = sampleRequestUrl(state.response.request);
             downloadableCount = state.response.downloadable_ws_count;
             error = null;
         } else {
@@ -94,7 +94,7 @@ function app(settings) {
             ranges = settings.total_ranges;
             weightSystemCount = settings.total_weight_system_count;
             wsPath = null;
-            samplePath = sample_request_url({});
+            samplePath = sampleRequestUrl({});
             downloadableCount = 0;
             if (state.response != null)
                 error = "Server error.";
@@ -154,7 +154,7 @@ function app(settings) {
             if (_.size(req) == 0)
                 return observableOf(setResponse(null));
 
-            return ajax(stats_request_url(state.getState().formData))
+            return ajax(statsRequestUrl(state.getState().formData))
                 .map(r => setResponse(Object.assign({}, r.response, { ok: true })))
                 .catch(() => observableOf(setResponse({ ok: false })));
         });
