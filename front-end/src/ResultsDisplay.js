@@ -77,7 +77,7 @@ function ResultsDisplay({ request, ranges, weightSystemCount, downloadableCount,
 
     const download = weightSystemCount == downloadableCount ? (
         <span>
-            The corresponding <a href={wsPath} download>weight systems</a> can be downloaded. {restrict}
+            The corresponding <a href={wsPath} target="_blank">weight systems</a> can be downloaded. {restrict}
         </span>
     ) : (
         <span>
@@ -87,7 +87,7 @@ function ResultsDisplay({ request, ranges, weightSystemCount, downloadableCount,
 
     const sampleDownload = weightSystemCount > sampleSize ? (
         <span>{" "}
-            A <a href={samplePath} download>sample</a> of {addThousandsSeparators(sampleSize)} weight systems can be downloaded.
+            A <a href={samplePath} target="_blank">sample</a> of {addThousandsSeparators(sampleSize)} weight systems can be downloaded.
         </span>
     ) : "";
 
