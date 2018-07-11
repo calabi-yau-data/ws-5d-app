@@ -163,3 +163,49 @@ def service(app, engine, name, all_fields, table_name, stats_table_name, read_ws
                               headers=[
                                   ("X-Content-Type-Options", "nosniff")],
                               )
+
+    @app.route("/" + name + "_<target_field>,<request>.txt", endpoint=name + "numbers")
+    def ws_numbers_handler(target_field, request):
+        request = urllib.parse.parse_qs(request.replace(",", "&"))
+        request_fields = parse_request({k: v[0] for k, v in request.items()})
+
+        if not target_field in all_fields:
+            flask.abort(404)  # not found
+
+        stats = get_stats(request_fields)
+
+        if stats is None:
+            return ""
+
+        if stats["ws_count"] > config.WEIGHT_SYSTEM_DOWNLOAD_LIMIT:
+            flask.abort(403)  # forbidden
+
+        columns = [
+            ws_table.c[target_field],
+            func.count(ws_table.c[target_field]).label("hodge_triple_count"),
+            func.sum(ws_table.c.ws_count).label("ws_count")
+        ]
+
+        query = sqlalchemy.sql.select(columns) \
+                              .group_by(ws_table.c[target_field])
+
+        for field in request_fields:
+            query = query.where(ws_table.c[field] == request_fields[field])
+
+        result = engine.execution_options(stream_results=True).execute(query)
+
+        def responder():
+            yield target_field + ",hodge_triple_count,ws_count\n"
+
+            try:
+                for row in result:
+                    yield (str(row[target_field]) + ","
+                           + str(row["hodge_triple_count"]) + ","
+                           + str(row["ws_count"]) + "\n")
+            finally:
+                result.close()
+
+        return flask.Response(responder(), mimetype="text/plain",
+                              headers=[
+                                  ("X-Content-Type-Options", "nosniff")],
+                              )

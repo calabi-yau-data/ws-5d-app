@@ -42,6 +42,11 @@ function app(settings) {
         return settings.backend_url + "," + qs + ".txt";
     }
 
+    function fieldRequestUrl(targetField, request) {
+        const qs = _.keys(request).map(key => key + "=" + request[key]).join(",");
+        return settings.backend_url + "_" + targetField + "," + qs + ".txt";
+    }
+
     function sampleRequestUrl(request) {
         const qs = _.keys(request)
             .map(key => key + "=" + request[key]);
@@ -89,6 +94,11 @@ function app(settings) {
             samplePath = sampleRequestUrl(state.response.request);
             downloadableCount = state.response.downloadable_ws_count;
             error = null;
+
+            _.each(ranges, (x, name) => {
+                x.list_url = downloadableCount == weightSystemCount ?
+                    fieldRequestUrl(name, state.response.request) : null;
+            });
         } else {
             request = [];
             ranges = settings.total_ranges;

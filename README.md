@@ -106,6 +106,23 @@ apt-get install python3 python3-flask python3-sqlalchemy python3-psycopg2 gunico
 dnf install python3 python3-flask python3-sqlalchemy python3-psycopg2 python3-gunicorn supervisor
 ```
 
+Generate attribute lists
+```
+for x in h11 h12 h13 h22 chi; do
+psql -d polyhedra -c "copy (
+    select $x, count(*) as hodge_triple_count, sum(ws_count) as ws_count
+    from reflexive5d group by $x order by $x
+) to stdout with csv header" > data/5d_reflexive_$x.txt
+done
+
+for x in vertex_count facet_count point_count; do
+psql -d polyhedra -c "copy (
+    select $x, count(*) as hodge_triple_count, sum(ws_count) as ws_count
+    from non_reflexive5d group by $x order by $x
+) to stdout with csv header" > data/5d_non_reflexive_$x.txt
+done
+```
+
 /etc/supervisor/conf.d/polyhedra5d.conf:
 ```ini
 [program:polyhedra5d]

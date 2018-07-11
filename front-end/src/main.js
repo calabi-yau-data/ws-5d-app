@@ -38,26 +38,31 @@ const REFLEXIVE_SETTINGS = {
             count: 190201,
             max: 303148,
             min: 1,
+            list_url: URL_PREFIX + "data/5d_reflexive_h11.txt",
         },
         h12: {
             count: 1689,
             max: 2010,
             min: 0,
+            list_url: URL_PREFIX + "data/5d_reflexive_h12.txt",
         },
         h13: {
             count: 145848,
             max: 303148,
             min: 1,
+            list_url: URL_PREFIX + "data/5d_reflexive_h13.txt",
         },
         h22: {
             count: 361426,
             max: 1213644,
             min: 82,
+            list_url: URL_PREFIX + "data/5d_reflexive_h22.txt",
         },
         chi: {
             count: 188804,
             max: 1820448,
             min: -252,
+            list_url: URL_PREFIX + "data/5d_reflexive_chi.txt",
         },
     },
     container_id: "reflexive-app"
@@ -90,16 +95,19 @@ const NON_REFLEXIVE_SETTINGS = {
             count: 44,
             max: 49,
             min: 6,
+            list_url: URL_PREFIX + "data/5d_non_reflexive_vertex_count.txt",
         },
         facet_count: {
             count: 58,
             max: 63,
             min: 6,
+            list_url: URL_PREFIX + "data/5d_non_reflexive_facet_count.txt",
         },
         point_count: {
             count: 179370,
             max: 222426,
             min: 7,
+            list_url: URL_PREFIX + "data/5d_non_reflexive_point_count.txt",
         },
     },
     container_id: "non-reflexive-app"

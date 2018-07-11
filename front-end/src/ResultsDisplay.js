@@ -6,8 +6,8 @@ function addThousandsSeparators(v) {
 }
 
 export default
-function ResultsDisplay({ request, ranges, weightSystemCount, downloadableCount, wsPath, sampleSize, samplePath,
-    fullyDetermined, error }) {
+function ResultsDisplay({ request, ranges, weightSystemCount, downloadableCount,
+    wsPath, sampleSize, samplePath, fullyDetermined, error }) {
 
     if (error !== null) {
         return (
@@ -55,8 +55,18 @@ function ResultsDisplay({ request, ranges, weightSystemCount, downloadableCount,
         </p>
     );
 
-    const formattedRanges = ranges.map(desc =>
-        desc.count == 1 ? (
+    const formattedRanges = ranges.map(desc => {
+        const values = desc.list_url !== null ? (
+            <span>
+                <a href={desc.list_url} target="_blank">
+                    {desc.count} values
+                </a>
+            </span>
+        ) : (
+            <span>{desc.count} values</span>
+        );
+
+        return desc.count == 1 ? (
             <li key={desc.name}>
                 <span dangerouslySetInnerHTML={{ __html: desc.label }}/>
                 {" "}= {desc.min}
@@ -66,11 +76,11 @@ function ResultsDisplay({ request, ranges, weightSystemCount, downloadableCount,
             <li key={desc.name}>
                 {desc.min} ≤{" "}
                 <span dangerouslySetInnerHTML={{ __html: desc.label }}/>
-                {" "}≤ {desc.max} ({desc.count} values)
+                {" "}≤ {desc.max} ({values})
                 <br/>
             </li>
-        )
-    );
+        );
+    });
 
     const restrict = fullyDetermined ? "" :
         "To further restrict the query, choose values in the ranges given above.";
