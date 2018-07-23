@@ -2,7 +2,11 @@ import _ from "lodash";
 import React from "react";
 
 function addThousandsSeparators(v) {
-    return String(v).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    v = String(v);
+    if (v.length <= 4)
+        return v;
+    return v.replace(/\B(?=(\d{3})+(?!\d))/g,
+                     String.fromCharCode(0x202F)); // NARROW NO-BREAK SPACE
 }
 
 export default
@@ -59,7 +63,7 @@ function ResultsDisplay({ request, ranges, weightSystemCount, downloadableCount,
         const values = desc.list_url !== null ? (
             <span>
                 <a href={desc.list_url} target="_blank">
-                    {desc.count} values
+                    {addThousandsSeparators(desc.count)} values
                 </a>
             </span>
         ) : (
@@ -69,14 +73,14 @@ function ResultsDisplay({ request, ranges, weightSystemCount, downloadableCount,
         return desc.count == 1 ? (
             <li key={desc.name}>
                 <span dangerouslySetInnerHTML={{ __html: desc.label }}/>
-                {" "}= {desc.min}
+                {" "}= {addThousandsSeparators(desc.min)}
                 <br/>
             </li>
         ) : (
             <li key={desc.name}>
-                {desc.min} ≤{" "}
+                {addThousandsSeparators(desc.min)} ≤{" "}
                 <span dangerouslySetInnerHTML={{ __html: desc.label }}/>
-                {" "}≤ {desc.max} ({values})
+                {" "}≤ {addThousandsSeparators(desc.max)} ({values})
                 <br/>
             </li>
         );
