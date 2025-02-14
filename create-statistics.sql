@@ -21,7 +21,7 @@ create unlogged table reflexive5d_stats (
     chi_min int4 not null,
     chi_max int4 not null,
     chi_count int4 not null,
-    ws_count int4 not null
+    ws_count int8 not null
 );
 
 create unlogged table non_reflexive5d_stats (
