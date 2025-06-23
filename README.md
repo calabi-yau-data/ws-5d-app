@@ -163,3 +163,19 @@ cd front-end
 npm install
 npm run build
 ```
+
+### Create list of Hodge numbers
+
+```sql
+sudo -u postgres psql -d polyhedra -c "copy (
+    select h11, h12, h13, sum(ws_count) as weight_system_count
+    from reflexive5d
+    group by h11, h12, h13
+) to stdout with csv header" > hodge-numbers.csv
+```
+
+```sh
+sudo zip /var/www/html/fourfolds/hodge-numbers.zip hodge-numbers.csv
+xz hodge-numbers.csv
+sudo mv hodge-numbers.csv.xz /var/www/html/fourfolds/hodge-numbers.csv.xz
+```
